@@ -6,24 +6,36 @@ function getCurrentTab(callback) {
 
   chrome.tabs.query(queryInfo, function(tabs) {
     var tab = tabs[0];
-    callback(tab);
+
+    var redirectContainer = $('#redirectContainer');
+    var statusContainer = $('#statusContainer');
+    if(tab.url.indexOf('visualstudio.com') < 0) {
+      redirectContainer.show();
+      statusContainer.hide();
+    }
+    else{
+      redirectContainer.hide();
+      statusContainer.show();
+      callback(tab);
+    }
   });
 }
 
-function renderStatus(statusText) {
-  document.getElementById('status').textContent = statusText;
+function renderStatus(tabTitle, statusText) {
+  $('#tabTitle').html(tabTitle);
+  $('#status').html(statusText);
 }
 
 function stop() {
   getCurrentTab(function(tab) {
     chrome.extension.sendMessage({action: "stopTimer", tab: tab}, function (response) {});
-    renderStatus('Nothing running');
+    renderStatus(tab.title, 'Nothing running');
   });
 }
 
 function start() {
   getCurrentTab(function(tab) {
-    renderStatus("Currently running");
+    renderStatus(tab.title, "Currently running");
     chrome.extension.sendMessage({action: "startTimer", tab: tab}, function (response) {});
   });
 }
@@ -32,9 +44,9 @@ function getStatus() {
   getCurrentTab(function(tab) {
     chrome.extension.sendMessage({action: "getStatus", tab: tab}, function (response) {
       if (response) {
-        renderStatus("Currently running");
+        renderStatus(tab.title, "Currently running");
       } else {
-        renderStatus('Nothing running');
+        renderStatus(tab.title, 'Nothing running');
       }
       
     });
