@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "VSO Clicker",
-  "description": "Click the vso complete pull request button when all are green.",
+  "description": "Click the vso complete pull request button when all are green",
   "version": "1.0",
 
   "browser_action": {
