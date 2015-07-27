@@ -1,34 +1,39 @@
-var intervalID;
+var tabIntervals = {};
 
 chrome.extension.onMessage.addListener( function(request,sender,sendResponse){
+  var tabId = request.tab.id;
   if(request.action === 'startTimer') {
-    startTimer(request.tab);
+    startTimer(tabId);
   } else if (request.action === 'stopTimer') {
-    stopTimer();
+    stopTimer(tabId);
   } else if (request.action === 'getStatus') {
-    sendResponse(intervalID != null);
+    sendResponse(tabIntervals[tabId] != null);
   }
 
 });
 
-function stopTimer() {
-  window.clearInterval(intervalID);
-  intervalID = null;
+function stopTimer(tabId) {
+  if(tabIntervals[tabId]){
+    window.clearInterval(tabIntervals[tabId]);
+    tabIntervals[tabId] = null;
+  }
 }
 
-function startTimer(tab) {
+function startTimer(tabId) {
+  if(!tabIntervals[tabId]) {
 
-  intervalID = window.setInterval(function() { 
-    chrome.tabs.sendMessage(tab.id, {action: "getDom"}, function (response) {
-      if (response === "finished") {
-        stopTimer();
-      }
-    });
-  }, 500);
-  
+    var intervalID = window.setInterval(function() {
+      chrome.tabs.sendMessage(tabId, {action: "getDom"}, function (response) {
+        if (response === "finished") {
+          stopTimer(tabId);
+        }
+      });
+    }, 500);
+    tabIntervals[tabId] = intervalID;
+  }
 }
 
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
   //Send kill message
-  stopTimer();
+  stopTimer(tabId);
 });
