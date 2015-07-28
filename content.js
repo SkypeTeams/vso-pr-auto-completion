@@ -18,16 +18,15 @@ chrome.runtime.onMessage.addListener( function(request,sender,sendResponse){
 
     if (reEval.length > 0 && reEval.css('display') !== 'none') {
       reEval[0].click();
-      
       sendResponse("timeout");
     } else if (reAttempt.length > 0 && reAttempt.css('display') !== 'none') {
-      alert("Re attempting to check for conflicts -- this usually doesn't work so we stopped the program.");
       sendResponse("finished");
+      alert("Re attempting to check for conflicts -- this usually doesn't work so we stopped the program.");
     } else if (reBuild.length > 0 && reBuild.css('display') !== 'none') {
       reBuild[0].click();
     } else if (succeeded && noConflicts && (approved || approvedWithSuggestions) ) {
       var button = $("button:contains('Complete pull request')")[0];
-      // button.click();      
+      button.click();  
       
       sendResponse("finished");
       alert('committed PR');
