@@ -10,6 +10,12 @@ chrome.runtime.onMessage.addListener( function(request,sender,sendResponse){
     var approvedWithSuggestions = $(".vc-pullrequest-view-details-item-status span:contains('Reviewers approved with suggestions'):visible").length > 0;
     var approved = $(".vc-pullrequest-view-details-item-status span:contains('Reviewers approved'):visible").length > 0;
 
+    if (!noConflicts) {
+      sendResponse("finished");
+      alert("Merge conflicts, please fix and then restart this tool");
+      return;
+    }
+
     if (reEval.length > 0 && reEval.css('display') !== 'none') {
       reEval[0].click();
       
