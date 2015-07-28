@@ -3,7 +3,7 @@ chrome.runtime.onMessage.addListener( function(request,sender,sendResponse){
   if(request.action === 'getDom') {
     
     var reEval = $("a:contains('re-evaluate')");
-    var reAttempt = $("a:contains('re-attempt')");
+    var reAttempt = $("a:contains('re-attempt')"); //TODO throw hand up!
     var reBuild = $("a:contains('rebuild')");
     var succeeded = $(".vc-pullrequest-view-details-item-status span:contains('Build succeeded'):visible").length > 0;
     var noConflicts = $(".vc-pullrequest-view-details-item-status span:contains('No merge conflicts'):visible").length > 0;
@@ -12,6 +12,7 @@ chrome.runtime.onMessage.addListener( function(request,sender,sendResponse){
 
     if (reEval.length > 0 && reEval.css('display') !== 'none') {
       reEval[0].click();
+      //TODO add a timeout to wait a few before moving on. VSO takes a few to start the build.
     } else if (reAttempt.length > 0 && reAttempt.css('display') !== 'none') {
       reAttempt[0].click();
     } else if (reBuild.length > 0 && reBuild.css('display') !== 'none') {
