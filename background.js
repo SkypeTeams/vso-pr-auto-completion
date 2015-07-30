@@ -29,7 +29,7 @@ function startTimer(tabId, title) {
           stopTimer(tabId);
           window.setTimeout(function() {
             startTimer(tabId);
-          }, 5000);
+          }, 10000);
         }
       });
     }, 500);

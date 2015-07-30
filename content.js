@@ -6,10 +6,11 @@ chrome.runtime.onMessage.addListener( function(request,sender,sendResponse){
     var reBuild = $("a:contains('rebuild')");
     var succeeded = $(".vc-pullrequest-view-details-item-status span:contains('Build succeeded'):visible").length > 0;
     var noConflicts = $(".vc-pullrequest-view-details-item-status span:contains('No merge conflicts'):visible").length > 0;
+    var mergeConflicts = $(".vc-pullrequest-view-details-item-status span:contains('Merge conflicts'):visible").length > 0;
     var approvedWithSuggestions = $(".vc-pullrequest-view-details-item-status span:contains('Reviewers approved with suggestions'):visible").length > 0;
     var approved = $(".vc-pullrequest-view-details-item-status span:contains('Reviewers approved'):visible").length > 0;
 
-    if (!noConflicts) {
+    if (mergeConflicts) {
       sendResponse("finished");
       alert("Merge conflicts, please fix and then restart this tool");
       return;
