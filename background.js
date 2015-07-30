@@ -25,6 +25,11 @@ function startTimer(tabId, title) {
       chrome.tabs.sendMessage(tabId, {action: "getDom"}, function (response) {
         if (response === "finished") {
           stopTimer(tabId);
+        } else if (response === "timeout") {
+          stopTimer(tabId);
+          window.setTimeout(function() {
+            startTimer(tabId);
+          }, 5000);
         }
       });
     }, 500);
