@@ -1,4 +1,3 @@
-debugger;
 chrome.runtime.onMessage.addListener( function(request,sender,sendResponse){
   if(request.action === 'getDom') {
     
@@ -19,11 +18,11 @@ chrome.runtime.onMessage.addListener( function(request,sender,sendResponse){
       reBuild[0].click();
     } else if (succeeded && noConflicts && (approved || approvedWithSuggestions) ) {
       var button = $("button:contains('Complete pull request')")[0];
-      // button.click();      
+      button.click();
       
       sendResponse("finished");
       alert('committed PR');
     }
-    
   }
 });
+
