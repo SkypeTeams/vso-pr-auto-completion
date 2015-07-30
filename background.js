@@ -3,23 +3,22 @@ var tabIntervals = {};
 chrome.extension.onMessage.addListener( function(request,sender,sendResponse){
   var tabId = request.tab.id;
   if(request.action === 'startTimer') {
-    startTimer(tabId);
+    startTimer(tabId, request.tab.title);
   } else if (request.action === 'stopTimer') {
     stopTimer(tabId);
   } else if (request.action === 'getStatus') {
     sendResponse(tabIntervals[tabId] != null);
   }
-
 });
 
 function stopTimer(tabId) {
   if(tabIntervals[tabId]){
-    window.clearInterval(tabIntervals[tabId]);
+    window.clearInterval(tabIntervals[tabId].intervalID);
     tabIntervals[tabId] = null;
   }
 }
 
-function startTimer(tabId) {
+function startTimer(tabId, title) {
   if(!tabIntervals[tabId]) {
 
     var intervalID = window.setInterval(function() {
@@ -34,11 +33,27 @@ function startTimer(tabId) {
         }
       });
     }, 500);
-    tabIntervals[tabId] = intervalID;
+    tabIntervals[tabId] = { intervalID: intervalID, title: title};
+  }
+  else{
+    alert('Already watching - ' + title);
+  }
+}
+
+function removeTab(tabId) {
+  var stateInfo = tabIntervals[tabId];
+  var isWatchingTab = stateInfo !== undefined;
+  if(isWatchingTab) {
+    var title = stateInfo.title;
+    stopTimer(tabId);
+    alert('You stopped watching PR - ' + title);
   }
 }
 
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
-  //Send kill message
-  stopTimer(tabId);
+  removeTab(tabId);
+});
+
+chrome.webNavigation.onBeforeNavigate.addListener(function(details){
+  removeTab(details.tabId);
 });

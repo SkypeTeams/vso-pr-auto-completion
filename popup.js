@@ -9,7 +9,7 @@ function getCurrentTab(callback) {
 
     var redirectContainer = $('#redirectContainer');
     var statusContainer = $('#statusContainer');
-    if(tab.url.indexOf('visualstudio.com') < 0) {
+    if(tab.url.indexOf('visualstudio.com') < 0 || tab.url.indexOf('/pullrequest/') < 0) {
       redirectContainer.show();
       statusContainer.hide();
     }
