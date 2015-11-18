@@ -1,3 +1,6 @@
+/**
+ * This event handler is called when sendMessage gets called on the tab where this content script is running
+ */
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action === 'getDom') {
 
