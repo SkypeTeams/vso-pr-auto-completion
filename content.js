@@ -1,4 +1,6 @@
-/* global chrome */
+/**
+ * This event handler is called when sendMessage gets called on the tab where this content script is running
+ */
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action === 'getDom') {
 
@@ -36,12 +38,15 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       var button = $("button:contains('Complete pull request')")[0];
       button.click();
       
+      // Send the response immediately to make sure that no future getDom requests are queued
+      sendResponse("finished");
+              
       // Wait for complete pull request popup to appear
       setTimeout(function completeMerge() {
         var mergePopup = $('.ui-dialog');
         var okButton = mergePopup.find('.ui-dialog-buttonpane #ok');
         okButton.click();
-        sendResponse("finished");
+
         alert('committed PR');
       }, 200);
     }
